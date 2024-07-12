@@ -108,6 +108,45 @@ app.MapPost("/api/imc/cadastrar",
     [FromServices] AppDataContext ctx) =>
 {
 
+ if (!double.TryParse(imc.Peso, out double peso))
+    {
+        return Results.BadRequest("Peso inválido.");
+    }
+    if (!double.TryParse(imc.Altura, out double altura))
+    {
+        return Results.BadRequest("Altura inválida.");
+    }
+
+    double valorIMC = peso / (altura * altura);
+
+
+    if (valorIMC < 18.5)
+    {
+        return Results.Ok("Abaixo do peso");
+    }
+    if (valorIMC >= 18.5 && valorIMC < 24.9)
+    {
+        return Results.Ok("Peso normal");
+    }
+    if (valorIMC >= 25 && valorIMC < 29.9)
+    {
+        return Results.Ok("Sobrepeso");
+    }
+    if (valorIMC >= 30 && valorIMC < 34.9)
+    {
+        return Results.Ok("Obesidade grau 1");
+    }
+    if (valorIMC >= 35 && valorIMC < 39.9)
+    {
+        return Results.Ok("Obesidade grau 2");
+    }
+    if (valorIMC >= 40)
+    {
+        return Results.Ok("Obesidade grau 3");
+    }
+
+ 
+    valorIMC.ToString();
     ctx.Imcs.Add(imc);
     ctx.SaveChanges();
     return Results.Created("", imc);
